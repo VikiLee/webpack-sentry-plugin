@@ -29,17 +29,14 @@ class SentryWebpackPlugin {
     if (!test && webpackOptions.mode !== 'production') {
       return;
     }
-
+    
     const code = `
-      const Sentry = require('@sentry/browser');
-      let config = {
-        release: '${pluginOptions.release}',
-        ...${JSON.stringify(pluginOptions.config ? pluginOptions.config : {})},
-      }
-      Sentry.init({
+      var Sentry = require('@sentry/browser');
+      var config = Object.assign({
         dsn: '${pluginOptions.dns}',
-        ...config
-      })
+        release: '${pluginOptions.release}'
+      }, ${JSON.stringify(pluginOptions.config ? pluginOptions.config : {})});
+      Sentry.init(config);
     `;
     compiler.options.plugins.push(
       new InjectPlugin(() => `${code}`)
