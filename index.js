@@ -33,9 +33,14 @@ class SentryWebpackPlugin {
     const code = `
       var Sentry = require('@sentry/browser');
       var config = Object.assign({
-        dsn: '${pluginOptions.dns}',
-        release: '${pluginOptions.release}'
-      }, ${JSON.stringify(pluginOptions.config ? pluginOptions.config : {})});
+          dsn: '${pluginOptions.dns}',
+          release: '${pluginOptions.release}'
+        }, 
+        ${JSON.stringify(pluginOptions.config ? pluginOptions.config : {})},
+        {  
+          ${pluginOptions.config.beforeSend ? pluginOptions.config.beforeSend.toString() : ''}
+        }
+      );
       Sentry.init(config);
     `;
     compiler.options.plugins.push(
